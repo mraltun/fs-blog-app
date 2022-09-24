@@ -1,26 +1,26 @@
 import express from "express";
-
-// Temp DB
-let articlesInfo = [
-  {
-    name: "learn-react",
-    upvotes: 0,
-    comments: [],
-  },
-  {
-    name: "learn-node",
-    upvotes: 0,
-    comments: [],
-  },
-  {
-    name: "mongodb",
-    upvotes: 0,
-    comments: [],
-  },
-];
+import { MongoClient } from "mongodb";
 
 const app = express();
 app.use(express.json());
+
+app.get("/api/articles/:name", async (req, res) => {
+  const { name } = req.params;
+
+  // mongodb+srv://mraltun:<password>@cluster0.btiys.mongodb.net/?retryWrites=true&w=majority
+  const client = new MongoClient("mongodb://127.0.0.1:27017");
+  await client.connect();
+
+  const db = client.db("fsblogappdb");
+
+  const article = await db.collection("articles").findOne({ name });
+
+  if (article) {
+    res.json(article);
+  } else {
+    res.sendStatus(404);
+  }
+});
 
 app.put("/api/articles/:name/upvote", (req, res) => {
   const { name } = req.params;
