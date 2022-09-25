@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import articles from "../data/article-content";
+import CommentsList from "../components/CommentsList";
 import NotFoundPage from "./NotFoundPage";
 
 const ArticlePage = () => {
@@ -10,9 +11,7 @@ const ArticlePage = () => {
 
   useEffect(() => {
     const loadArticleInfo = async () => {
-      const response = await axios(
-        `http://localhost:8000/api/articles/${articleId}`
-      );
+      const response = await axios(`/api/articles/${articleId}`);
       const newArticleInfo = response.data;
       setArticleInfo(newArticleInfo);
     };
@@ -33,6 +32,7 @@ const ArticlePage = () => {
       {article.content.map((paragraph, index) => (
         <p key={index}>{paragraph}</p>
       ))}
+      <CommentsList comments={articleInfo.comments} />
     </>
   );
 };
