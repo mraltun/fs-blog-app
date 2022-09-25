@@ -25,8 +25,7 @@ app.put("/api/articles/:name/upvote", async (req, res) => {
   const article = await db.collection("articles").findOne({ name });
 
   if (article) {
-    article.upvotes += 1;
-    res.send(`The ${name} article now has ${article.upvotes}`);
+    res.json(article);
   } else {
     res.send("That article does not exits");
   }
