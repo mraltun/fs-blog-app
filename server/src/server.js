@@ -1,13 +1,18 @@
+import fs from "fs";
+import admin from "firebase-admin";
 import express from "express";
 import { db, connectToDb } from "./db.js";
+
+const credentials = JSON.parse(fs.readFileSync("../credentials.json"));
+admin.initializeApp({
+  credential: admin.credential.cert(credentials),
+});
 
 const app = express();
 app.use(express.json());
 
 app.get("/api/articles/:name", async (req, res) => {
   const { name } = req.params;
-
-  // mongodb+srv://mraltun:<password>@cluster0.btiys.mongodb.net/?retryWrites=true&w=majority
 
   const article = await db.collection("articles").findOne({ name });
 
