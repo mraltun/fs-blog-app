@@ -1,10 +1,9 @@
 import { MongoClient } from "mongodb";
+
 let db;
 
-// mongodb+srv://mraltun:<password>@cluster0.btiys.mongodb.net/?retryWrites=true&w=majority
-
 const connectToDb = async (cb) => {
-  const client = new MongoClient("mongodb://127.0.0.1:27017");
+  const client = new MongoClient(process.env.MONGO_URL);
   await client.connect();
   const db = client.db("fsblogappdb");
   cb();

@@ -1,7 +1,15 @@
 import fs from "fs";
+import path from "path";
 import admin from "firebase-admin";
 import express from "express";
 import { db, connectToDb } from "./db.js";
+import { fileURLToPath } from "url";
+import * as dotenv from "dotenv";
+
+dotenv.config();
+// Because we are using "type: module"
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const credentials = JSON.parse(fs.readFileSync("./credentials.json"));
 admin.initializeApp({
@@ -10,6 +18,12 @@ admin.initializeApp({
 
 const app = express();
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "../build")));
+
+// Any request that doesn't go to "api" route, we show the index page
+app.get(/^(?!\/api).+/, (req, res) => {
+  res.sendFile(path.join(__dirname), "../build/index.html");
+});
 
 app.use(async (req, res, next) => {
   const { authtoken } = req.headers;
@@ -92,6 +106,8 @@ app.post("/api/articles/:name/comments", async (req, res) => {
     res.send("That article does not exits");
   }
 });
+
+const PORT = process.env.PORT || 8000;
 
 connectToDb(() => {
   app.listen(8000, () => {
