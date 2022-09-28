@@ -17,6 +17,7 @@ admin.initializeApp({
 
 const app = express();
 app.use(express.json());
+// This is for using "build"
 app.use(express.static(path.join(__dirname, "../build")));
 
 // Any request that doesn't go to "api" route, we show the index page
